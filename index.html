@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+    <button onclick="startSerialCommunication()">Connect</button>
+    <button onclick="stopSerialCommunication()">Disconnect</button>
+    <input type="text" id="text"><button onclick="sendData()">Send</button>
+<script>
+let port, textEncoder, writer, writableStreamClosed = -1;
+
+function sendData(){
+    let txt = document.getElementById("text").value;
+    
+    writeSerialData(port, txt)
+}
+ // Richiedi l'accesso alla porta seriale
+async function requestSerialPort() {
+    
+    try {
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 }); // Configura la velocità di baud rate appropriata
+        let settings = {};
+
+        if (localStorage.dtrOn == "true") settings.dataTerminalReady = true;
+        if (localStorage.rtsOn == "true") settings.requestToSend = true;
+        if (Object.keys(settings).length > 0) await port.setSignals(settings);
+        
+        textEncoder = new TextEncoderStream();
+        writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+        writer = textEncoder.writable.getWriter();
+        
+        return port;
+    } catch (error) {
+        console.error("Errore durante la richiesta della porta seriale:", error);
+    }
+}
+
+// Leggi dati dalla porta seriale
+async function readSerialData(port) {
+  const reader = port.readable.getReader();
+
+  while (true) {
+    try {
+      const { value, done } = await reader.read();
+      if (done) break;
+      // Elabora i dati letti
+      console.log("Dati seriali ricevuti:", new TextDecoder().decode(value));
+    } catch (error) {
+      console.error("Errore durante la lettura dati seriali:", error);
+      break;
+    }
+  }
+
+  reader.releaseLock();
+}
+
+// Scrivi dati sulla porta seriale
+async function writeSerialData(port, data) {
+  
+    
+
+  try {
+    await writer.write(data + "\n");
+    console.log("Dati seriali inviati con successo.");
+  } catch (error) {
+    console.error("Errore durante l'invio dati seriali:", error);
+  } finally {
+    //writer.releaseLock();
+  }
+}
+
+function stopSerialCommunication(){
+    writer.releaseLock();
+}
+
+// Esempio di utilizzo
+async function startSerialCommunication() {
+  port = await requestSerialPort();
+  if (port) {
+    await readSerialData(port); // Avvia la lettura dei dati seriali
+    // Puoi anche scrivere dati sulla porta seriale utilizzando la funzione writeSerialData()
+    await writeSerialData(port, "Dati da inviare sulla porta seriale");
+  }
+}
+
+// Avvia la comunicazione seriale
+</script>
+
+
+</body>
+</html>
