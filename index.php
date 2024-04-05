@@ -3,5 +3,5 @@
 echo "Hello Azure";
 
 $stdout = fopen('php://stdout', 'a');
-fwrite($stdout, "piyo");
+fwrite($stdout, "アクセスしました。");
 fclose($stdout);
