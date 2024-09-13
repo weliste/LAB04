@@ -45,6 +45,7 @@ async function readSerialData(port) {
   while (true) {
     try {
       const { value, done } = await reader.read();
+        console.log("lettura porta:" + done);
       if (done) break;
       // Elabora i dati letti
       console.log("Dati seriali ricevuti:", new TextDecoder().decode(value));
