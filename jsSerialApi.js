@@ -78,6 +78,7 @@ async function readSerialData(port) {
     while (true) {
         try {
             const { value, done } = await reader.read();
+		console.log("Conferma lettura da porta: "+ done);
             if (done) break;
            console.log("");
             let arr = value;
@@ -91,11 +92,11 @@ async function readSerialData(port) {
                 app = app + ricev;
             }
             
-            //console.log("Ricevuto:" + app);
+            console.log("Ricevuto:" + app);
             
             
             let translate = translateConvertedChar2ClearChar(app);
-            //console.log("translate: " + translate)
+            console.log("translate: " + translate)
             document.getElementById("rispostaCom").value=translate;
             document.getElementById('form1').submit();
             //------------------------------------------
