@@ -77,6 +77,7 @@ async function readSerialData(port) {
     let ricev = '';
     while (true) {
         try {
+		console.log("Inizio lettura");
             const { value, done } = await reader.read();
 		console.log("Conferma lettura da porta: "+ done);
             if (done) break;
