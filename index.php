@@ -1,3 +1,4 @@
 <?php
 
-echo "Hello World!";
+echo "Hello World! This is an example of Entreprise Private only available internamly through Netskope";
+?>
