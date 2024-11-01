@@ -1,3 +1,3 @@
 <?php
 
-echo "Ceci est mon premier app service version 1.0.5 sur Azure!!";
+echo "Ceci est mon premier app service version 1.0.9 sur Azure!!";
